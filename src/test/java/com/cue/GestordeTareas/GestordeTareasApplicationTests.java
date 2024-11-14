@@ -60,7 +60,6 @@ class GestordeTareasApplicationTests {
 		task.setId(1);
 		when(taskService.getTask(1)).thenReturn(task);
 
-		// Realizar la petición con `MockMvc`
 		mockMvc.perform(get("/tasks/byId/1")
 						.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk());

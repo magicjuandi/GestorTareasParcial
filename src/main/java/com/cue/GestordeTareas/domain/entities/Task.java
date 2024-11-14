@@ -7,7 +7,7 @@ import lombok.*;
 
 @Entity
 @Table(name = "tasks", schema = "public")
-public class Task {//
+public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
