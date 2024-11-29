@@ -18,6 +18,14 @@ public class Task {
         this.title = builder.title;
     }
 
+    @Override
+    public String toString() {
+        return "Task{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                '}';
+    }
+
     public Task(int id, String title) {
         this.id = id;
         this.title = title;
@@ -41,6 +49,7 @@ public class Task {
     public void setTitle(String title) {
         this.title = title;
     }
+
 
     public static class Builder {
         private int id;

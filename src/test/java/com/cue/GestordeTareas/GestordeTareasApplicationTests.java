@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +19,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
+import javax.sql.DataSource;
+import java.sql.Connection;
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
@@ -25,9 +30,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("test")
 @AutoConfigureMockMvc
 class GestordeTareasApplicationTests {
+	@Autowired
+	private DataSource dataSource;
 	@LocalServerPort
 	private int port;
 	@MockBean
@@ -42,23 +48,19 @@ class GestordeTareasApplicationTests {
 	void setup() {
 		RestAssured.port = port;
 	}
-
 	@Test
-	void getTasks() {
-		when(taskService.getTasks()).thenReturn(List.of(task));
-
-		RestAssured.given()
-				.when()
-				.get("/tasks/get")
-				.then()
-				.statusCode(200)
-				.contentType(ContentType.JSON);
+	void testDatabaseConnection() throws Exception {
+		assertNotNull(dataSource, "El DataSource debe estar configurado");
+		try(Connection connection = dataSource.getConnection()) {
+			assertNotNull(connection, "La conexión a la BD es exitosa");
+		}
 	}
+
 	@Test
 	void getTask() throws Exception {
 		Task task = new Task();
 		task.setId(1);
-		when(taskService.getTask(1)).thenReturn(task);
+		when(taskService.getTask(1)).thenReturn(Optional.of(task));
 
 		mockMvc.perform(get("/tasks/byId/1")
 						.contentType(MediaType.APPLICATION_JSON))

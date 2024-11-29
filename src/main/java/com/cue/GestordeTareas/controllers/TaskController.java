@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/tasks")
@@ -16,8 +17,7 @@ public class TaskController {
     @PostMapping("/create")
     public ResponseEntity<Task> create(@RequestBody String title){
         Task task = new Task.Builder()
-                .id(1)
-                .title("Titulo de tarea")
+                .title(title)
                 .build();
         return ResponseEntity.ok(taskService.saveTask(task));
     }
@@ -26,12 +26,8 @@ public class TaskController {
                                        @RequestBody String title){
         return ResponseEntity.ok(taskService.updateTask(id, title));
     }
-    @GetMapping("/get")
-    public ResponseEntity<List<Task>> getAll(){
-        return ResponseEntity.ok(taskService.getTasks());
-    }
     @GetMapping("/byId/{id}")
-    public ResponseEntity<Task> getById(@PathVariable int id){
+    public ResponseEntity<Optional<Task>> getById(@PathVariable int id){
         return ResponseEntity.ok(taskService.getTask(id));
     }
     @DeleteMapping("/delete/{id}")

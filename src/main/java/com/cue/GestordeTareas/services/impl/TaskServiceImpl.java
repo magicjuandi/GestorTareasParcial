@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 @Service
 public class TaskServiceImpl implements TaskService {
     private final TaskRepository taskRepository;
@@ -35,15 +37,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<Task> getTasks() {
-        List<Task> tasks =  new ArrayList<>();
-        taskRepository.findAll().forEach(tasks::add);
-        return tasks;
-
-    }
-
-    @Override
-    public Task getTask(int id) {
-        return taskRepository.findById(id).get();
+    public Optional<Task> getTask(int id) {
+        return taskRepository.findById(id);
     }
 }

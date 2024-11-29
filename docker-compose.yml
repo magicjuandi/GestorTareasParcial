@@ -1,0 +1,29 @@
+networks:
+  app_network:
+    driver: bridge
+services:
+  task_db:
+    container_name: task_db
+    image: postgres:12
+    ports:
+      - 5433:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: magic
+      POSTGRES_DB: GestorTareas
+    networks:
+      - app_network
+
+  task_app:
+    container_name: task_app
+    build: .
+    ports:
+      - 8080:8080
+    environment:
+      - DATABASE_URL=jdbc:postgresql://task_db:5432/GestorTareas
+      - DATABASE_USERNAME=postgres
+      - DATABASE_PASSWORD=magic
+    depends_on:
+      - task_db
+    networks:
+      - app_network
