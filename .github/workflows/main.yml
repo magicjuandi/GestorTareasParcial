@@ -1,4 +1,4 @@
-name: Run Tests
+name: Run Maven Tests with Docker
 
 on:
   push:
@@ -9,38 +9,39 @@ on:
       - master
 
 jobs:
-  test:
+  maven-tests:
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres:12
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: magic
-          POSTGRES_DB: GestorTareas
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd "pg_isready -U postgres"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
     steps:
-      - name: Checkout code
+      # Paso 1: Checkout del repositorio
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'corretto'
-          java-version: '17'
-          cache: 'maven'
+      # Paso 2: Configurar Docker Compose
+      - name: Set up Docker Compose
+        run: |
+          docker compose up -d --build
 
-      - name: Build with Maven
-        run: mvn clean install
+      # Paso 3: Esperar a que los servicios estén listos
+      - name: Wait for services to be ready
+        run: |
+          until docker compose exec db pg_isready -U postgres; do
+            echo "Waiting for PostgreSQL to be ready..."
+            sleep 5
+          done
 
+      # Paso 4: Ejecutar migraciones (opcional, si usas migraciones con Maven o SQL)
+      - name: Run migrations
+        run: |
+          docker compose exec app mvn flyway:migrate
+
+      # Paso 5: Ejecutar pruebas
       - name: Run tests
         run: |
-          mvn test && echo "Desplegado" || echo "Negado"
+          docker compose exec app mvn test
+
+      # Paso 6: Simular despliegue
+      - name: Simulate Deployment
+        if: ${{ success() }}
+        run: |
+          echo "Deployment simulated: All tests passed!"
