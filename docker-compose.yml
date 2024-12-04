@@ -1,19 +1,6 @@
-networks:
-  app_network:
-    driver: bridge
-services:
-  task_db:
-    container_name: task_db
-    image: postgres:12
-    ports:
-      - 5433:5432
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: magic
-      POSTGRES_DB: GestorTareas
-    networks:
-      - app_network
+version: '3.8'
 
+services:
   task_app:
     container_name: task_app
     build: .
@@ -25,5 +12,15 @@ services:
       - DATABASE_PASSWORD=magic
     depends_on:
       - task_db
-    networks:
-      - app_network
+    working_dir: /app
+    command: mvn spring-boot:run
+
+  task_db:
+    container_name: task_db
+    image: postgres:12
+    ports:
+      - 5433:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: magic
+      POSTGRES_DB: GestorTareas
