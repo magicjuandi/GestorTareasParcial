@@ -160,4 +160,3 @@ Ejemplo de reporte de pruebas:
   }
   ```
 
-Este documento proporciona una guía detallada para la realización y documentación de las pruebas en el proyecto.
