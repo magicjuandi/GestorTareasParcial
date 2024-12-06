@@ -12,7 +12,6 @@ services:
       - task_db
     working_dir: /app
     command: mvn spring-boot:run
-
   task_db:
     container_name: task_db
     image: postgres:12

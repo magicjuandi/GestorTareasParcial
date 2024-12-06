@@ -9,11 +9,9 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -23,16 +21,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
-import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
